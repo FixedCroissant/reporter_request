@@ -12,6 +12,12 @@ storage/
 .env.php
 .env
 
+#Idea
+.idea
+
+#IGNORE CSS/BUILD FOLDER FOR LESS/SASS BUIDS
+/public/css/build/
+
 # Rocketeer PHP task runner and deployment package. https://github.com/rocketeers/rocketeer
 .rocketeer/
 
