@@ -15,6 +15,9 @@ storage/
 #Idea
 .idea
 
+#Ignore Additional Changes to CSS file.
+/public/css/app.css
+
 #IGNORE CSS/BUILD FOLDER FOR LESS/SASS BUIDS
 /public/css/build/
 

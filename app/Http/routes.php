@@ -16,3 +16,7 @@ Route::controllers([
 	'auth' => 'Auth\AuthController',
 	'password' => 'Auth\PasswordController',
 ]);
+
+//Create a new request.
+Route::resource('/', 'HelpRequestController',
+    ['only' => ['index','create','store']]);

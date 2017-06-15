@@ -1,6 +1,8 @@
 {
   "devDependencies": {
     "gulp": "^3.8.8",
-    "laravel-elixir": "*"
+    "laravel-elixir": "*",
+    "boostrap-less":"^3.0.0",
+    "vue": "^2.3.4"
   }
 }
