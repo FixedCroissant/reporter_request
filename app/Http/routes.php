@@ -20,3 +20,6 @@ Route::controllers([
 //Create a new request.
 Route::resource('/', 'HelpRequestController',
     ['only' => ['index','create','store']]);
+
+//Search our directory
+Route::get('findUser/{unityID?}',array('as'=>'findUser.index','uses'=>'LookUpController@index'));

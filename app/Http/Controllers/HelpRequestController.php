@@ -1,9 +1,11 @@
 <?php namespace App\Http\Controllers;
 
+use App\Classes\LDAPLookUpClass;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
-
 use Illuminate\Http\Request;
+//Use lookup table
+use App\symposiumLDAPLookup;
 
 class HelpRequestController extends Controller {
 
@@ -67,6 +69,9 @@ class HelpRequestController extends Controller {
      * Store information into the database
      */
 	public function store(){
+
+	    //Send information via email.
+
 
 
     }

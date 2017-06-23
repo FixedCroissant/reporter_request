@@ -1,9 +1,7 @@
 var elixir = require('laravel-elixir');
+var vueify = require('laravel-elixir-vueify');
 var gulp = require('gulp');
-var shell = require("gulp-shell");
-var concat = require("gulp-concat");
-var rename = require('gulp-rename');
-var uglify = require('gulp-uglify');
+
 
 /*
  |--------------------------------------------------------------------------
@@ -37,23 +35,6 @@ elixir(function(mix) {
  |-------------------------------------------------------------------------
  */
 
-//Handle Concatenation of my scripts
-//Handle it standard gulp style
-gulp.task('combine-scripts', function(){
-    //Script locations
-    var jsFiles = 'resources/assets/js/**/*.js',
-        //Destination
-        jsDest = 'public/scripts/build';
-
-        return gulp.src(jsFiles)
-            .pipe(concat('scripts.js'))
-            //Go to my destination.
-            .pipe(gulp.dest(jsDest))
-            //Rename information
-            .pipe(rename('script.min.js'))
-            .pipe(uglify())
-            .pipe(gulp.dest(jsDest));
-});
 
 elixir(function(mix) {
     mix.browserify('app.js');
