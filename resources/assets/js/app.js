@@ -1,82 +1,68 @@
 import Vue from 'vue';
 //import Project from './Project.vue';
 import lookup from './LookUp.vue';
-
+//Allow to get information through AJAX lookup.
 var request = require('request');
-
-
-
 
 //Register Component
 //User list.
-Vue.component('user-list', {
-    template: `
-    <li>
-      {{ name }}
-      <button v-on:click="$emit('remove')">X</button>
-    </li>
-  `,
-    props: ['name']
-})
-
-new Vue({
+var vue = new Vue({
     el: '#lookUpArea',
-    data: {
+    components: { lookup },
+    data:     {
           searchString: "",
-                // The data model. These items would normally be requested via AJAX,
-                // but are hardcoded here for simplicity.
-                users: [],
-                checkedNames: [],
-                manualStudent:[]
+          checkedNames: [],
+          manualStudent:[],
+          message:[]
 },
-computed: {
-    // A computed property that holds only those articles that match the searchString.
-    filteredUsers: function () {
-        var users_array = this.users,
-            searchString = this.searchString;
+    computed: {
 
-        //if nothing in the search box, list all options.
-        if(!searchString){
-            //Instead of returning ALL options, limit to first 3.
-            return users_array.slice(1,4)
-
-            //return users_array;
-        }
-
-        searchString = searchString.trim().toLowerCase();
-
-        users_array = users_array.filter(function(item){
-            if(item.title.toLowerCase().indexOf(searchString) !== -1){
-                return item;
-            }
-        })
-
-        // Return an array with the filtered data.
-        return users_array;;
-    }
-},
+    },
     methods:{
-        adminUserNotFound: function(){
-            //Check for empty string
-            if(this.manualStudent==""){
-                //Do not add
-            }
-            else{
-                this.checkedNames.push(this.manualStudent)
-                //this.manualStudent = ''
-            }
 
-        }
-        ,
-        fetchData: function(searchString){
-            alert(searchString);
+    //FETCH INFORMATION
+    fetchData: function(){
+        //Request the Data as needed.
+        requestData(this.checkedNames,this.searchString,this.message);
 
-            request('findUser/'+searchString, function (error, response) {
-                console.log('error:', error); // Print the error if one occurred
-                console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
-            });
+        //Clear the searchbox.
+        this.searchString='';
 
-        }
     }
+}
+
+
+
 });
 
+/***
+ *
+ * @param person
+ * @param searchPerson
+ * @param message
+ */
+function requestData(person,searchPerson,message) {
+    request('http://192.168.33.10/public/reporter_request/public/index.php/findUser/' + searchPerson, function (error, response, body) {
+        //console.log('error:', error); // Print the error if one occurred
+        //console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
+        //console.log('body:',body);
+
+        //Check for any errors on look up.
+        if (response.statusCode == 200) {
+
+            //getData
+            var dataParsed = $.parseJSON(body);
+            if(dataParsed['givenname']=="No Results Found given UnityID")
+            {
+                //message = {message:'No person found based on this ID, if you want to add, please let us know in the text box below.'};
+                message.push({messageItem:'No person found based on this ID, if you want to add, please let us know in the text box below.'});
+                //Clear the message array.
+                return this.message=[];
+            }
+            else{
+                //this.checkedNames.push({firstname:dataParsed['givenname'],lastname:dataParsed['sn'],dept:dataParsed['departmentName']})
+                person.push({firstname:dataParsed['givenname'],lastname:dataParsed['sn'],dept:dataParsed['departmentName'],unityid:dataParsed['unityid']});
+            }
+        }/*Response ok when searching via the user search*/
+    })
+}

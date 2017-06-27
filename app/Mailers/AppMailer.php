@@ -25,7 +25,7 @@ class AppMailer
     /**
      * From name or company
      */
-    protected $fromName = 'Fake Address';
+    protected $fromName = 'DASA Help Desk';
 
     /**
      * The sender of the email.

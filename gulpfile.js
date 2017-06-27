@@ -20,14 +20,14 @@ elixir.config.sourcemaps = false;
 
 
 //Handle LESS
-/*
+
 elixir(function(mix) {
     //Compile LESS
     mix.less(['app.less','bootstrap/main-center.less']);
 
     //Move to build directory
     mix.copy('public/css/app.css','public/css/build/app-build.css')
-});*/
+});
 
 /*
  |-------------------------------------------------------------------------
@@ -37,5 +37,7 @@ elixir(function(mix) {
 
 
 elixir(function(mix) {
+    //Mix scripts.
+    mix.scripts(['preventSubmission.js']);
     mix.browserify('app.js');
 });

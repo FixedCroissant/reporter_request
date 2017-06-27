@@ -4,8 +4,11 @@ use App\Classes\LDAPLookUpClass;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-//Use lookup table
-use App\symposiumLDAPLookup;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Validator;
+//Use mailer
+use App\Mailers\AppMailer;
+use Input;
 
 class HelpRequestController extends Controller {
 
@@ -59,20 +62,154 @@ class HelpRequestController extends Controller {
             'University Theatre'=>'University Theatre',
             'University Transition Program'=>'University Transition Program');
         //Standard OUCS
-        $standardOUCS = array(''=>'Please select OUC ....');
+        $standardOUCS = include('ouc_list.php');
 
         //Go to view
         Return view('request.create')->with(array('ouc_standard_list'=>$standardOUCS,'universityDepartments'=>$departments,'status'=>$myStatuses,'visibility'=>$visibility,'subject_areas'=>$subjectAreas));
 	}
 
+    /**
+     * Review details prior to submitting information via e-mail.
+     * @param Request $request
+     */
+	public function review(Request $request){
+        //Need to verify all information is turned in.
+        //validate
+        //read more on validation at https://laravel.com/docs/5.0/validation
+        $rules = array(
+            'user_unity_id'=>'required',
+            'user_first_name'=>'required',
+            'user_last_name'=>'required',
+            'user_email_address'=>'required|email',
+            'college_division'=>'required',
+            'department_unit'=>'required',
+            'status'=>'required|max:100',
+            'visibility'=>'required',
+            'official_title'=>'required',
+            'working_title'=>'required',
+            'course_description'=>'required',
+            'course_catalog_excerpt'=>'required',
+            'department'=>'required',
+            'unit_ouc'=>'required',
+            'instructional_hours'=>'required',
+            'course_keywords'=>'required',
+            'subject_area_course_catalog'=>'required',
+
+
+        );
+        //Validator ...
+        $validator = Validator::make(Input::all(),$rules);
+        //process the creation of a symposium registration presenter
+        if($validator->fails())
+        {
+            //If any valdiation errors, go back to the student registration page.
+            return Redirect::back()->withErrors($validator)->withInput();
+
+        }
+        else{
+            //Get Request Information
+            return View('request.review')->with(array('reviewInformation'=>$request));
+        }
+
+    }
+
 	/**
      * Store information into the database
+     * In this case, instead of storing into the database, this method is altered to
+     * send information out via a Mailer Class.
      */
-	public function store(){
+	public function store(Request $request){
+	    //Send Information Via E-mail.
+        //Create new mailer.
+        $mailer = app(AppMailer::class);
 
-	    //Send information via email.
+
+//return dd($request);
+        //HANDLE E-MAIL NOTIFICATION
+        //Information to Pass to my E-Mail Message as a Confirmation
+        $data = array(
+            'user_unity_id'=>$request['user_unity_id'],
+            'user_first_name'=>$request['user_first_name'],
+            'user_last_name'=>$request['user_last_name'],
+            'user_email_address'=>$request['user_email_address'],
+            'college_division'=>$request['college_division'],
+            'department_unit'=>$request['department_unit'],
+            'ext_course_num'=>$request['ext_course_num'],
+            'status'=>$request['status'],
+            'visibility'=>$request['visibility'],
+            'official_title'=>$request['official_title'],
+            'working_title'=>$request['working_title'],
+            'course_description'=>$request['course_description'],
+            'course_catalog_excerpt'=>$request['course_catalog_excerpt'],
+            'department'=>$request['department'],
+            'unit_ouc'=>$request['unit_ouc'],
+            'instructional_hours'=>$request['instructional_hours'],
+            'certification_program_name'=>$request['certification_program_name'],
+            'course_keywords'=>$request['course_keywords'],
+            'subject_area_course_catalog'=>$request['subject_area_course_catalog'],
+            'additional_information'=>$request['additional_information'],
+            'instructor'=>$request['instructor']
+
+        );
+
+        //Get Information on where to send the e-mail message.
+        //TO TECH SERVICES.
+        $EMAIL_TO_INFORMATION = array(
+            'to'=>'jjwill10@ncsu.edu',
+            'lastName'=>'Tech Services',
+            'firstName'=>'DASA'
+        );
+        //View to use.
+        $view='emails.notificationMessage';
+        //Set view
+        $mailer->setView($view);
+        //Set subject
+        $mailer->setMailSubject('DASA Reporter Request');
+        //Set to address
+        $mailer->setTo('jjwill10@ncsu.edu');
+        //Set to Name
+        $mailer->setToName($EMAIL_TO_INFORMATION['firstName'].' '.$EMAIL_TO_INFORMATION['lastName']);
+
+        //Set the data that needs to be sent with the view.
+        $mailer->setData($data);
+
+        //Send mail via App\Mailer\AppMailer.
+        //This will deliver the e-mail based on the criteria above.
+        $mailer->sendMessage();
+        //END E-MAIL NOTIFICATION
+
+        //Email the individual who submitted the information a little thank you.
+        //FOR THANK YOU MESSAGE
+        $EMAIL_TO_INFORMATION_THANK_YOU = array(
+            'to'=>$request['user_email_address'],
+            'lastName'=>$request['user_last_name'],
+            'firstName'=>$request['user_first_name']
+        );
+
+        //View to use.
+        $view='emails.thankYouMessage';
+        //Set view
+        $mailer->setView($view);
+        //Set subject
+        $mailer->setMailSubject('DASA Reporter Request -- Submitted');
+        //Set to address
+        $mailer->setTo($EMAIL_TO_INFORMATION_THANK_YOU['to']);
+        //Set to Name
+        $mailer->setToName($EMAIL_TO_INFORMATION_THANK_YOU['firstName'].' '.$EMAIL_TO_INFORMATION_THANK_YOU['lastName']);
+
+        //Set the data that needs to be sent with the view.
+        $mailer->setData($data);
+
+        //return dd($mailer);
+
+        //Send mail via App\Mailer\AppMailer.
+        //This will deliver the e-mail based on the criteria above.
+        $mailer->sendMessage();
+        //END E-MAIL NOTIFICATION
 
 
+        //Redirect back to the index with a notification message.
+        return redirect()->route('create')->with('message','Your Request Has Been Sent! ');
 
     }
 }

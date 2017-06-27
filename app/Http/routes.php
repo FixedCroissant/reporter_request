@@ -17,6 +17,11 @@ Route::controllers([
 	'password' => 'Auth\PasswordController',
 ]);
 
+//Add a way to review information prior to sending the email.
+Route::post('/reviewRequest',['as'=>'front.help.review','uses'=>'HelpRequestController@review']);
+
+Route::post('/saveInformation',['as'=>'front.help.store','uses'=>'HelpRequestController@store']);
+
 //Create a new request.
 Route::resource('/', 'HelpRequestController',
     ['only' => ['index','create','store']]);

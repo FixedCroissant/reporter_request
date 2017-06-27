@@ -44,7 +44,8 @@ class LookUpController extends Controller {
                             'departmentnumber'=> $results[0]["departmentnumber"][0],
                             'departmentName'=>$results[0]['ncsuaffiliation'][0],
                             'givenname'=> $results[0]["givenname"][0],
-                            'sn'=> $results[0]["sn"][0]
+                            'sn'=> $results[0]["sn"][0],
+                            'unityid'=>$results[0]["uid"][0]
                         ));
                 }/*End is not null*/
             }/*close for loop*/

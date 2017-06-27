@@ -74,3 +74,5 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+#IGNORE FILE.
+/app/Http/Controllers/ouc_list.php
