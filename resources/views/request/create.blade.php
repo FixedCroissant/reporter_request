@@ -184,7 +184,7 @@
                                         <input type="hidden" name="instructor[]" value="@{{ index.dept }} @{{ index.firstname }} @{{ index.lastname }} (@{{ index.unityid }})"/>
                                         <span v-on:click="checkedNames.splice(index, 1)"class="btn btn-sm btn-danger"> REMOVE</span>
                                     </li>
-                                    <p v-if="message" v-for="messages in message" style="font-weight:bold;">
+                                    <p v-for="messages in message" style="font-weight:bold;">
                                         @{{ messages.messageItem }}
                                     </p>
                                 </span>
@@ -195,7 +195,6 @@
             <!--End Load-->
             <!--Load Script-->
             {!!  HTML::script('/js/app.js') !!}
-            {!!  HTML::script('/js/ouc.js') !!}
         </div>
     </div>
     <div class="row">

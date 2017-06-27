@@ -123,8 +123,6 @@ class HelpRequestController extends Controller {
         //Create new mailer.
         $mailer = app(AppMailer::class);
 
-
-//return dd($request);
         //HANDLE E-MAIL NOTIFICATION
         //Information to Pass to my E-Mail Message as a Confirmation
         $data = array(
@@ -155,7 +153,6 @@ class HelpRequestController extends Controller {
         //Get Information on where to send the e-mail message.
         //TO TECH SERVICES.
         $EMAIL_TO_INFORMATION = array(
-            'to'=>'jjwill10@ncsu.edu',
             'lastName'=>'Tech Services',
             'firstName'=>'DASA'
         );
@@ -166,7 +163,8 @@ class HelpRequestController extends Controller {
         //Set subject
         $mailer->setMailSubject('DASA Reporter Request');
         //Set to address
-        $mailer->setTo('jjwill10@ncsu.edu');
+        //This will notify DASA Tech
+        $mailer->setTo('dasa-tech-help@ncsu.edu');
         //Set to Name
         $mailer->setToName($EMAIL_TO_INFORMATION['firstName'].' '.$EMAIL_TO_INFORMATION['lastName']);
 
@@ -200,7 +198,6 @@ class HelpRequestController extends Controller {
         //Set the data that needs to be sent with the view.
         $mailer->setData($data);
 
-        //return dd($mailer);
 
         //Send mail via App\Mailer\AppMailer.
         //This will deliver the e-mail based on the criteria above.
