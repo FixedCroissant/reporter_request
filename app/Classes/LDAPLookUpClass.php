@@ -63,14 +63,25 @@ class LDAPLookUpClass
 
 
         $valuesNeeded = array(
-
+            'givenName',
+            'departmentnumber',
+            'gn',
+            'sn',
+            'memberUid',
+            'organizationName',
+            'organizationalPerson',
+            'organizationalUnit',
+            'organizationalUnitName',
+            'ncsuAdditionalInformation',
+            'uid',
+            'ncsuaffiliation'
         );
 
         //Search
         //Second Parameter for NCSU is  ou=employees,ou=people,dc=ncsu,dc=edu.
         //$search = ldap_search($ldapconn,"dc=test,dc=com",$filter,$justthese,0,10);
         //Production
-        $search = ldap_search($ldapconn,"ou=employees,ou=people,dc=,dc=edu",$filter,$valuesNeeded,0,10);
+        $search = ldap_search($ldapconn,"ou=employees,ou=people,dc=ncsu,dc=edu",$filter,$valuesNeeded,0,10);
 
         //Get Results
         $results = ldap_get_entries($ldapconn,$search);

@@ -76,3 +76,5 @@ $RECYCLE.BIN/
 *.lnk
 #IGNORE FILE.
 /app/Http/Controllers/ouc_list.php
+#IGNORE PUBLIC FOLDER
+/public/
